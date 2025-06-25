@@ -23,8 +23,8 @@ import sys
 import typing
 
 import click
-import discord
-from discord.ext import commands
+import discord_mod
+from discord_mod.ext import commands
 
 LOADABLES = (
     ('j!1 ', 'tests.subclassed_module_1'),
@@ -37,8 +37,8 @@ async def async_entrypoint(token: str):
     bots: typing.List[commands.Bot] = []
 
     for prefix, extension in LOADABLES:
-        bot = commands.Bot(prefix, intents=discord.Intents.all())
-        await discord.utils.maybe_coroutine(bot.load_extension, extension)
+        bot = commands.Bot(prefix, intents=discord_mod.Intents.all())
+        await discord_mod.utils.maybe_coroutine(bot.load_extension, extension)
 
         bots.append(bot)
 

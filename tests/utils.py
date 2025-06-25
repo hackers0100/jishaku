@@ -15,7 +15,7 @@ import random
 from unittest import mock
 from unittest.mock import patch
 
-from discord.ext import commands
+from discord_mod.ext import commands
 
 
 def sentinel():
