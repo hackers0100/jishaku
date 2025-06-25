@@ -134,7 +134,7 @@ class Feature(commands.Cog):
             if not self.callback:
                 raise RuntimeError("A Features.Command lacked a callback at the time it was attempted to be converted")
 
-            return command_type(**self.kwargs)(self.callback)
+            return command_type(**self.kwargs)(self.callback) # type: ignore[reportUnknownVariableType]
 
     load_time: datetime = datetime.now(timezone.utc)
 
