@@ -1,0 +1,2 @@
+class Cog:
+    pass
