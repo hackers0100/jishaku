@@ -20,9 +20,9 @@ import discord_mod
 from discord_mod import ui
 from discord_mod.ext import commands
 
-from jishaku_mod.flags import Flags
-from jishaku_mod.hljs import get_language, guess_file_traits
-from jishaku_mod.types import BotT, ContextA
+from jishaku_mod_.flags import Flags
+from jishaku_mod_.hljs import get_language, guess_file_traits
+from jishaku_mod_.types import BotT, ContextA
 
 if typing.TYPE_CHECKING:
     from discord_mod.types.components import ButtonComponent

@@ -14,9 +14,9 @@ You should run it in a bash-like shell (that supports ANSI codes).
 
 import asyncio
 
-from jishaku_mod.formatting import MultilineFormatter
-from jishaku_mod.repl import AsyncCodeExecutor
-from jishaku_mod.repl.disassembly import get_adaptive_spans
+from jishaku_mod_.formatting import MultilineFormatter
+from jishaku_mod_.repl import AsyncCodeExecutor
+from jishaku_mod_.repl.disassembly import get_adaptive_spans
 
 CODE = '''
 import math

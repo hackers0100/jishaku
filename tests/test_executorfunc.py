@@ -14,7 +14,7 @@ import typing
 
 import pytest
 
-from jishaku_mod.functools import executor_function
+from jishaku_mod_.functools import executor_function
 
 
 def sig(*args, **kwargs):

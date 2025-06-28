@@ -23,13 +23,13 @@ import discord_mod
 from discord_mod import ui
 from discord_mod.ext import commands
 
-from jishaku_mod.codeblocks import Codeblock, codeblock_converter
-from jishaku_mod.exception_handling import ReplResponseReactor
-from jishaku_mod.features.baseclass import Feature
-from jishaku_mod.flags import Flags
-from jishaku_mod.paginators import PaginatorInterface, WrappedPaginator
-from jishaku_mod.shell import ShellReader
-from jishaku_mod.types import ContextA
+from jishaku_mod_.codeblocks import Codeblock, codeblock_converter
+from jishaku_mod_.exception_handling import ReplResponseReactor
+from jishaku_mod_.features.baseclass import Feature
+from jishaku_mod_.flags import Flags
+from jishaku_mod_.paginators import PaginatorInterface, WrappedPaginator
+from jishaku_mod_.shell import ShellReader
+from jishaku_mod_.types import ContextA
 
 SCAFFOLD_FOLDER = pathlib.Path(__file__).parent / 'scaffolds'
 

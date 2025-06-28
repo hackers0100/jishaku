@@ -16,16 +16,16 @@ This variant overrides behavior directly.
 
 from discord_mod.ext import commands
 
-import jishaku_mod
-from jishaku_mod.types import ContextT
+import jishaku_mod_
+from jishaku_mod_.types import ContextT
 
 
-class Magnet2(*jishaku_mod.OPTIONAL_FEATURES, *jishaku_mod.STANDARD_FEATURES):  # pylint: disable=too-few-public-methods
+class Magnet2(*jishaku_mod_.OPTIONAL_FEATURES, *jishaku_mod_.STANDARD_FEATURES):  # pylint: disable=too-few-public-methods
     """
     The extended Jishaku cog
     """
 
-    @jishaku_mod.Feature.Command(name="jishaku", aliases=["jsk"], invoke_without_command=True, ignore_extra=False)
+    @jishaku_mod_.Feature.Command(name="jishaku", aliases=["jsk"], invoke_without_command=True, ignore_extra=False)
     async def jsk(self, ctx: ContextT):
         """
         override test

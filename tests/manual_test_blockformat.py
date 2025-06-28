@@ -14,7 +14,7 @@ You should run it in a bash-like shell (that supports ANSI codes).
 
 import inspect
 
-from jishaku_mod.formatting import LineFormatter, MultilineFormatter
+from jishaku_mod_.formatting import LineFormatter, MultilineFormatter
 
 if __name__ == '__main__':
     print("== No Annotations Test ==")

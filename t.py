@@ -1,1 +1,1 @@
-from jishaku_mod.features.baseclass import *
+from jishaku_mod_.features.baseclass import *

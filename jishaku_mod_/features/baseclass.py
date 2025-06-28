@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from discord_mod.ext import commands
 from typing_extensions import Concatenate, ParamSpec
 
-from jishaku_mod.types import BotT, ContextA
+from jishaku_mod_.types import BotT, ContextA
 
 __all__ = (
     'Feature',

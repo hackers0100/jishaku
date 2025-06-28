@@ -22,12 +22,12 @@ except ImportError:
 import discord_mod
 from discord_mod.ext import commands
 
-from jishaku_mod.features.baseclass import Feature
-from jishaku_mod.flags import Flags
-from jishaku_mod.math import natural_size
-from jishaku_mod.modules import package_version
-from jishaku_mod.paginators import PaginatorInterface
-from jishaku_mod.types import ContextA
+from jishaku_mod_.features.baseclass import Feature
+from jishaku_mod_.flags import Flags
+from jishaku_mod_.math import natural_size
+from jishaku_mod_.modules import package_version
+from jishaku_mod_.paginators import PaginatorInterface
+from jishaku_mod_.types import ContextA
 
 try:
     import psutil

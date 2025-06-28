@@ -1,15 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""
-jishaku.features.python
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-The jishaku Python evaluation/execution commands.
-
-:copyright: (c) 2021 Devon (scarletcafe) R
-:license: MIT, see LICENSE for more details.
-
-"""
+from .base import Command
 
 import asyncio
 import collections
@@ -19,18 +10,18 @@ import sys
 import time
 import typing
 
-import discord_mod
+# import discord_mod
 
-from jishaku_mod.codeblocks import Codeblock, codeblock_converter
-from jishaku_mod.exception_handling import ReplResponseReactor
-from jishaku_mod.features.baseclass import Feature
-from jishaku_mod.flags import Flags
-from jishaku_mod.formatting import MultilineFormatter
-from jishaku_mod.functools import AsyncSender
-from jishaku_mod.math import format_bargraph, format_stddev
-from jishaku_mod.paginators import PaginatorInterface, WrappedPaginator, use_file_check
-from jishaku_mod.repl import AsyncCodeExecutor, Scope, all_inspections, create_tree, disassemble, get_adaptive_spans, get_var_dict_from_ctx
-from jishaku_mod.types import ContextA
+# from jishaku_mod_.codeblocks import Codeblock, codeblock_converter
+# from jishaku_mod_.exception_handling import ReplResponseReactor
+# from jishaku_mod_.features.baseclass import Feature
+# from jishaku_mod_.flags import Flags
+# from jishaku_mod_.formatting import MultilineFormatter
+# from jishaku_mod_.functools import AsyncSender
+# from jishaku_mod_.math import format_bargraph, format_stddev
+# from jishaku_mod_.paginators import PaginatorInterface, WrappedPaginator, use_file_check
+# from jishaku_mod_.repl import AsyncCodeExecutor, Scope, all_inspections, create_tree, disassemble, get_adaptive_spans, get_var_dict_from_ctx
+# from jishaku_mod_.types import ContextA
 
 try:
     import line_profiler  # type: ignore
@@ -38,16 +29,16 @@ except ImportError:
     line_profiler = None
 
 
-class PythonFeature(Feature):
+class PythonFeature(Command):
     """
     Feature containing the Python-related commands
     """
 
     def __init__(self, *args: typing.Any, **kwargs: typing.Any):
-        super().__init__(*args, **kwargs)
         self._scope = Scope()
         self.retain = Flags.RETAIN
         self.last_result: typing.Any = None
+        super().__init__(*args, **kwargs)
 
     @property
     def scope(self):

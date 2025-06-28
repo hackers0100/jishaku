@@ -16,7 +16,7 @@ import typing
 
 import discord_mod
 
-from jishaku_mod.types import ContextT
+from jishaku_mod_.types import ContextT
 
 
 async def copy_context_with(

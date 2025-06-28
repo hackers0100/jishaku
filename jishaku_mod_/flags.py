@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+
+"""
+jishaku.flags
+~~~~~~~~~~~~~~
+
+The Jishaku cog base, which contains most of the actual functionality of Jishaku.
+
+:copyright: (c) 2021 Devon (scarletcafe) R
+:license: MIT, see LICENSE for more details.
+
+"""
 
 import dataclasses
 import inspect
@@ -6,7 +18,7 @@ import typing
 
 import discord_mod
 
-# from jishaku_mod_.types import ContextA
+from jishaku_mod_.types import ContextA
 
 ENABLED_SYMBOLS = ("true", "t", "yes", "y", "on", "1")
 DISABLED_SYMBOLS = ("false", "f", "no", "n", "off", "0")
@@ -162,6 +174,9 @@ class Flags(metaclass=FlagMeta):  # pylint: disable=too-few-public-methods
         When None, the caller should decide
         """
 
+        if cls.ALWAYS_DM_TRACEBACK:
+            return message.author
+
         if cls.NO_DM_TRACEBACK:
             return message.channel
 
@@ -178,16 +193,16 @@ class Flags(metaclass=FlagMeta):  # pylint: disable=too-few-public-methods
     # Flag to indicate whether ANSI support should always be disabled
     USE_ANSI_NEVER: bool
 
-    # @classmethod
-    # def use_ansi(cls, ctx: ContextA) -> bool:
-    #     """
-    #     Determine whether to use ANSI support from flags and context
-    #     """
+    @classmethod
+    def use_ansi(cls, ctx: ContextA) -> bool:
+        """
+        Determine whether to use ANSI support from flags and context
+        """
 
-    #     if cls.USE_ANSI_NEVER:
-    #         return False
+        if cls.USE_ANSI_NEVER:
+            return False
 
-    #     if cls.USE_ANSI_ALWAYS:
-    #         return True
+        if cls.USE_ANSI_ALWAYS:
+            return True
 
-    #     return not ctx.author.is_on_mobile() if isinstance(ctx.author, discord_mod.Member) and ctx.bot.intents.presences else True
+        return not ctx.author.is_on_mobile() if isinstance(ctx.author, discord_mod.Member) and ctx.bot.intents.presences else True

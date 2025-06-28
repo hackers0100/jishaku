@@ -19,9 +19,9 @@ import typing
 
 import import_expression  # type: ignore
 
-from jishaku_mod.functools import AsyncSender
-from jishaku_mod.repl.scope import Scope
-from jishaku_mod.repl.walkers import KeywordTransformer
+from jishaku_mod_.functools import AsyncSender
+from jishaku_mod_.repl.scope import Scope
+from jishaku_mod_.repl.walkers import KeywordTransformer
 
 CORO_CODE = """
 async def _repl_coroutine({0}):

@@ -22,11 +22,11 @@ import typing
 import discord_mod
 from discord_mod.ext import commands
 
-from jishaku_mod.exception_handling import ReplResponseReactor
-from jishaku_mod.features.baseclass import Feature
-from jishaku_mod.models import copy_context_with
-from jishaku_mod.paginators import PaginatorInterface, WrappedPaginator, use_file_check
-from jishaku_mod.types import ContextA, ContextT
+from jishaku_mod_.exception_handling import ReplResponseReactor
+from jishaku_mod_.features.baseclass import Feature
+from jishaku_mod_.models import copy_context_with
+from jishaku_mod_.paginators import PaginatorInterface, WrappedPaginator, use_file_check
+from jishaku_mod_.types import ContextA, ContextT
 
 UserIDConverter = commands.IDConverter[typing.Union[discord_mod.Member, discord_mod.User]]
 ChannelIDConverter = commands.IDConverter[
