@@ -22,14 +22,30 @@ class Command:
     
 
 class Group(Command):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.commands: list[Command] = []
+        super().__init__(*args, **kwargs)
 
-    def command(self, name: Optional[str] = None) -> Callable[[Callable[..., Any]], Command]:
+    def command(self, name: Optional[str] = None, aliases: Optional[list[str]] = None) -> Callable[[Callable[..., Any]], Command]:
         def decor(func: Callable[..., Any]) -> Command:
-            cmd = Command()
+            cmd = Command(aliases=aliases)
             cmd.name = name or func.__name__
             cmd.callback = func
             return cmd
 
         return decor
+
+    def group(self, name: Optional[str] = None, aliases: Optional[list[str]] = None) -> Callable[[Callable[..., Any]], "Group"]:
+        def decor(func: Callable[..., Any]) -> "Group":
+            cmd = Group(aliases=aliases)
+            cmd.name = name or func.__name__
+            cmd.callback = func
+            return cmd
+
+        return decor
+    
+class JSK(Group): # type: ignore
+    async def callback(self):
+        return "jsk"
+    
+JSK: Group = JSK()

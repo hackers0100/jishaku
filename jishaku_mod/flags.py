@@ -4,8 +4,6 @@ import inspect
 import os
 import typing
 
-import discord_mod
-
 # from jishaku_mod_.types import ContextA
 
 ENABLED_SYMBOLS = ("true", "t", "yes", "y", "on", "1")
@@ -156,15 +154,13 @@ class Flags(metaclass=FlagMeta):  # pylint: disable=too-few-public-methods
     ALWAYS_DM_TRACEBACK: bool
 
     @classmethod
-    def traceback_destination(cls, message: discord_mod.Message) -> typing.Optional[discord_mod.abc.Messageable]:
+    def traceback_destination(cls, message: ...) -> typing.Optional[typing.Any]:
         """
         Determine what 'default' location to send tracebacks to
         When None, the caller should decide
         """
 
-        if cls.NO_DM_TRACEBACK:
-            return message.channel
-
+        
         # Otherwise let the caller decide
         return None
 

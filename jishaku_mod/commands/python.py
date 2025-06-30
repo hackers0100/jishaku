@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .base import Command
+from .base import Command, JSK
 
 import asyncio
 import collections
@@ -12,15 +12,22 @@ import typing
 
 # import discord_mod
 
-# from jishaku_mod_.codeblocks import Codeblock, codeblock_converter
+from jishaku_mod.codeblocks import Codeblock, codeblock_converter
 # from jishaku_mod_.exception_handling import ReplResponseReactor
-# from jishaku_mod_.features.baseclass import Feature
-# from jishaku_mod_.flags import Flags
+from jishaku_mod.flags import Flags
 # from jishaku_mod_.formatting import MultilineFormatter
 # from jishaku_mod_.functools import AsyncSender
 # from jishaku_mod_.math import format_bargraph, format_stddev
 # from jishaku_mod_.paginators import PaginatorInterface, WrappedPaginator, use_file_check
-# from jishaku_mod_.repl import AsyncCodeExecutor, Scope, all_inspections, create_tree, disassemble, get_adaptive_spans, get_var_dict_from_ctx
+from jishaku_mod.repl import (
+    AsyncCodeExecutor,
+    Scope,
+    all_inspections,
+    create_tree,
+    disassemble,
+    get_adaptive_spans,
+    get_var_dict_from_ctx
+)
 # from jishaku_mod_.types import ContextA
 
 try:
@@ -53,7 +60,7 @@ class PythonFeature(Command):
             return self._scope
         return Scope()
 
-    @Feature.Command(parent="jsk", name="retain")
+    @JSK.command(name="retain")
     async def jsk_retain(self, ctx: ContextA, *, toggle: bool = None):  # type: ignore
         """
         Turn variable retention for REPL on or off.
@@ -81,61 +88,26 @@ class PythonFeature(Command):
         self.retain = False
         return await ctx.send("Variable retention is OFF. Future REPL sessions will dispose their scope when done.")
 
-    async def jsk_python_result_handling(self, ctx: ContextA, result: typing.Any):  # pylint: disable=too-many-return-statements
+    async def jsk_python_result_handling(self, ctx: ContextA, result: typing.Any):
         """
         Determines what is done with a result when it comes out of jsk py.
         This allows you to override how this is done without having to rewrite the command itself.
         What you return is what gets stored in the temporary _ variable.
         """
-
-        if isinstance(result, discord_mod.Message):
-            return await ctx.send(f"<Message <{result.jump_url}>>")
-
-        if isinstance(result, discord_mod.File):
-            return await ctx.send(file=result)
-
-        if isinstance(result, discord_mod.Embed):
-            return await ctx.send(embed=result)
-
-        if isinstance(result, PaginatorInterface):
-            return await result.send_to(ctx)
-
         if not isinstance(result, str):
             # repr all non-strings
             result = repr(result)
 
-        # Eventually the below handling should probably be put somewhere else
-        if len(result) <= 2000:
-            if result.strip() == '':
-                result = "\u200b"
 
-            if self.bot.http.token:
-                result = result.replace(self.bot.http.token, "[token omitted]")
+        if result.strip() == '':
+            result = "\u200b"
 
-            return await ctx.send(
-                result,
-                allowed_mentions=discord_mod.AllowedMentions.none()
-            )
+        # if self.bot.http.token:
+        #     result = result.replace(self.bot.http.token, "[token omitted]")
 
-        if use_file_check(ctx, len(result)):  # File "full content" preview limit
-            # Discord's desktop and web client now supports an interactive file content
-            #  display for files encoded in UTF-8.
-            # Since this avoids escape issues and is more intuitive than pagination for
-            #  long results, it will now be prioritized over PaginatorInterface if the
-            #  resultant content is below the filesize threshold
-            return await ctx.send(file=discord_mod.File(
-                filename="output.py",
-                fp=io.BytesIO(result.encode('utf-8'))
-            ))
-
-        # inconsistency here, results get wrapped in codeblocks when they are too large
-        #  but don't if they're not. probably not that bad, but noting for later review
-        paginator = WrappedPaginator(prefix='```py', suffix='```', max_size=1980)
-
-        paginator.add_line(result)
-
-        interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
-        return await interface.send_to(ctx)
+        return await ctx.send(
+            result,
+        )
 
     def jsk_python_get_convertables(self, ctx: ContextA) -> typing.Tuple[typing.Dict[str, typing.Any], typing.Dict[str, str]]:
         """
@@ -149,29 +121,15 @@ class PythonFeature(Command):
         arg_dict["_"] = self.last_result
         convertables: typing.Dict[str, str] = {}
 
-        if getattr(ctx, 'interaction', None) is None:
-            for index, user in enumerate(ctx.message.mentions):
-                arg_dict[f"__user_mention_{index}"] = user
-                convertables[user.mention] = f"__user_mention_{index}"
-
-            for index, channel in enumerate(ctx.message.channel_mentions):
-                arg_dict[f"__channel_mention_{index}"] = channel
-                convertables[channel.mention] = f"__channel_mention_{index}"
-
-            for index, role in enumerate(ctx.message.role_mentions):
-                arg_dict[f"__role_mention_{index}"] = role
-                convertables[role.mention] = f"__role_mention_{index}"
-
         return arg_dict, convertables
 
-    @Feature.Command(parent="jsk", name="py", aliases=["python"])
-    async def jsk_python(self, ctx: ContextA, *, argument: codeblock_converter):  # type: ignore
+    @JSK.command(name="py", aliases=["python"])
+    async def jsk_python(self, ctx: ContextA, *, argument: str):  # type: ignore
         """
         Direct evaluation of Python code.
         """
 
-        if typing.TYPE_CHECKING:
-            argument: Codeblock = argument  # type: ignore
+        argument: Codeblock = codeblock_converter(argument)
 
         arg_dict, convertables = self.jsk_python_get_convertables(ctx)
         scope = self.scope
