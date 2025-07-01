@@ -15,8 +15,9 @@
         "https://json.schemastore.org/github-workflow.json": "file:///t%3A/GitHub/jishaku/.github/workflows/deploy.yml"
     },
     "esbonio.sphinx.confDir": "",
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "standard",
     "python.analysis.diagnosticSeverityOverrides": {
-        "reportAttributeAccessIssue": "none"
+        "reportAttributeAccessIssue": "none",
+        "reportUnknownMemberType": true
     }
 }

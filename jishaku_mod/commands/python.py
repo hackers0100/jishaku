@@ -13,7 +13,8 @@ import typing
 # import discord_mod
 
 from jishaku_mod.codeblocks import Codeblock, codeblock_converter
-# from jishaku_mod_.exception_handling import ReplResponseReactor
+from jishaku_mod.commands.context import Context
+from jishaku_mod.exception_handling import ReplResponseReactor
 from jishaku_mod.flags import Flags
 # from jishaku_mod_.formatting import MultilineFormatter
 # from jishaku_mod_.functools import AsyncSender
@@ -28,7 +29,6 @@ from jishaku_mod.repl import (
     get_adaptive_spans,
     get_var_dict_from_ctx
 )
-# from jishaku_mod_.types import ContextA
 
 try:
     import line_profiler  # type: ignore
@@ -61,7 +61,7 @@ class PythonFeature(Command):
         return Scope()
 
     @JSK.command(name="retain")
-    async def jsk_retain(self, ctx: ContextA, *, toggle: bool = None):  # type: ignore
+    async def jsk_retain(self, ctx: Context, *, toggle: bool = None):  # type: ignore
         """
         Turn variable retention for REPL on or off.
 
@@ -88,7 +88,7 @@ class PythonFeature(Command):
         self.retain = False
         return await ctx.send("Variable retention is OFF. Future REPL sessions will dispose their scope when done.")
 
-    async def jsk_python_result_handling(self, ctx: ContextA, result: typing.Any):
+    async def jsk_python_result_handling(self, ctx: Context, result: typing.Any):
         """
         Determines what is done with a result when it comes out of jsk py.
         This allows you to override how this is done without having to rewrite the command itself.
@@ -109,7 +109,7 @@ class PythonFeature(Command):
             result,
         )
 
-    def jsk_python_get_convertables(self, ctx: ContextA) -> typing.Tuple[typing.Dict[str, typing.Any], typing.Dict[str, str]]:
+    def jsk_python_get_convertables(self, ctx: Context) -> typing.Tuple[typing.Dict[str, typing.Any], typing.Dict[str, str]]:
         """
         Gets the arg dict and convertables for this scope.
 
@@ -124,7 +124,7 @@ class PythonFeature(Command):
         return arg_dict, convertables
 
     @JSK.command(name="py", aliases=["python"])
-    async def jsk_python(self, ctx: ContextA, *, argument: str):  # type: ignore
+    async def jsk_python(self, ctx: Context, *, argument: str):  # type: ignore
         """
         Direct evaluation of Python code.
         """
@@ -153,7 +153,7 @@ class PythonFeature(Command):
             scope.clear_intersection(arg_dict)
 
     @Feature.Command(parent="jsk", name="py_inspect", aliases=["pyi", "python_inspect", "pythoninspect"])
-    async def jsk_python_inspect(self, ctx: ContextA, *, argument: codeblock_converter):  # type: ignore
+    async def jsk_python_inspect(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
         """
         Evaluation of Python code with inspect information.
         """
@@ -211,7 +211,7 @@ class PythonFeature(Command):
 
     if line_profiler is not None:
         @Feature.Command(parent="jsk", name="timeit")
-        async def jsk_timeit(self, ctx: ContextA, *, argument: codeblock_converter):  # type: ignore
+        async def jsk_timeit(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
             """
             Times and produces a relative timing report for a block of code.
             """
@@ -313,7 +313,7 @@ class PythonFeature(Command):
                 scope.clear_intersection(arg_dict)
 
     @Feature.Command(parent="jsk", name="dis", aliases=["disassemble"])
-    async def jsk_disassemble(self, ctx: ContextA, *, argument: codeblock_converter):  # type: ignore
+    async def jsk_disassemble(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
         """
         Disassemble Python code into bytecode.
         """
@@ -340,7 +340,7 @@ class PythonFeature(Command):
                 await interface.send_to(ctx)
 
     @Feature.Command(parent="jsk", name="ast")
-    async def jsk_ast(self, ctx: ContextA, *, argument: codeblock_converter):  # type: ignore
+    async def jsk_ast(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
         """
         Disassemble Python code into AST.
         """
@@ -358,7 +358,7 @@ class PythonFeature(Command):
 
     if sys.version_info >= (3, 11):
         @Feature.Command(parent="jsk", name="specialist")
-        async def jsk_specialist(self, ctx: ContextA, *, argument: codeblock_converter):  # type: ignore
+        async def jsk_specialist(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
             """
             Direct evaluation of Python code.
             """

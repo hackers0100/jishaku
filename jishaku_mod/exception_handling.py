@@ -8,7 +8,7 @@ from types import TracebackType
 
 from typing_extensions import ParamSpec
 
-from jishaku_mod_.flags import Flags
+from jishaku_mod.flags import Flags
 
 
 async def send_traceback(
@@ -69,7 +69,7 @@ class ReplResponseReactor:  # pylint: disable=too-few-public-methods
 
     __slots__ = ('message', 'loop', 'handle', 'raised')
 
-    def __init__(self, message, loop: typing.Optional[asyncio.BaseEventLoop] = None):
+    def __init__(self, message: typing.Any, loop: typing.Optional[asyncio.BaseEventLoop] = None):
         self.message = message
         self.loop = loop or asyncio.get_event_loop()
         self.handle = None

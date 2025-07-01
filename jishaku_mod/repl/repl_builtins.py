@@ -4,7 +4,7 @@ import typing
 
 import aiohttp # type: ignore
 
-from jishaku_mod_.types import ContextA
+from jishaku_mod.commands.context import Context
 
 
 async def http_get_bytes(*args: typing.Any, **kwargs: typing.Any) -> bytes:
@@ -65,7 +65,7 @@ async def http_post_json(*args: typing.Any, **kwargs: typing.Any) -> typing.Dict
             return await response.json()
 
 
-def get_var_dict_from_ctx(ctx: ContextA, prefix: str = '_') -> typing.Dict[str, typing.Any]:
+def get_var_dict_from_ctx(ctx: Context, prefix: str = '_') -> typing.Dict[str, typing.Any]:
     """
     Returns the dict to be used in REPL for a given Context.
     """
@@ -81,5 +81,8 @@ def get_var_dict_from_ctx(ctx: ContextA, prefix: str = '_') -> typing.Dict[str, 
         'message': ctx.message,
         'msg': ctx.message
     }
+    for i in ['guild', 'channel']:
+        if hasattr(ctx, i):
+            raw_var_dict[i] = getattr(ctx, i)
 
     return {f'{prefix}{k}': v for k, v in raw_var_dict.items()}
