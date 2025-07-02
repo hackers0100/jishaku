@@ -16,9 +16,9 @@ from jishaku_mod.codeblocks import Codeblock, codeblock_converter
 from jishaku_mod.commands.context import Context
 from jishaku_mod.exception_handling import ReplResponseReactor
 from jishaku_mod.flags import Flags
-# from jishaku_mod_.formatting import MultilineFormatter
-# from jishaku_mod_.functools import AsyncSender
-# from jishaku_mod_.math import format_bargraph, format_stddev
+from jishaku_mod.formatting import MultilineFormatter
+from jishaku_mod.functools import AsyncSender
+from jishaku_mod.math import format_bargraph, format_stddev
 # from jishaku_mod_.paginators import PaginatorInterface, WrappedPaginator, use_file_check
 from jishaku_mod.repl import (
     AsyncCodeExecutor,
@@ -136,7 +136,7 @@ class PythonFeature(Command):
 
         try:
             async with ReplResponseReactor(ctx.message):
-                with self.submit(ctx):
+                with JSK.submit(ctx):
                     executor = AsyncCodeExecutor(argument.content, scope, arg_dict=arg_dict, convertables=convertables)
                     async for send, result in AsyncSender(executor):  # type: ignore
                         send: typing.Callable[..., None]
@@ -152,21 +152,20 @@ class PythonFeature(Command):
         finally:
             scope.clear_intersection(arg_dict)
 
-    @Feature.Command(parent="jsk", name="py_inspect", aliases=["pyi", "python_inspect", "pythoninspect"])
-    async def jsk_python_inspect(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
+    @JSK.command(name="py_inspect", aliases=["pyi", "python_inspect", "pythoninspect"])
+    async def jsk_python_inspect(self, ctx: Context, *, argument: str):  # type: ignore
         """
         Evaluation of Python code with inspect information.
         """
 
-        if typing.TYPE_CHECKING:
-            argument: Codeblock = argument  # type: ignore
+        argument: Codeblock = codeblock_converter(argument)
 
         arg_dict, convertables = self.jsk_python_get_convertables(ctx)
         scope = self.scope
 
         try:
             async with ReplResponseReactor(ctx.message):
-                with self.submit(ctx):
+                with JSK.submit(ctx):
                     executor = AsyncCodeExecutor(argument.content, scope, arg_dict=arg_dict, convertables=convertables)
                     async for send, result in AsyncSender(executor):  # type: ignore
                         send: typing.Callable[..., None]
@@ -176,8 +175,8 @@ class PythonFeature(Command):
 
                         header = repr(result).replace("``", "`\u200b`")
 
-                        if self.bot.http.token:
-                            header = header.replace(self.bot.http.token, "[token omitted]")
+                        # if self.bot.http.token:
+                            # header = header.replace(self.bot.http.token, "[token omitted]")
 
                         if len(header) > 485:
                             header = header[0:482] + "..."
@@ -194,37 +193,37 @@ class PythonFeature(Command):
 
                         text = "\n".join(lines)
 
-                        if use_file_check(ctx, len(text)):  # File "full content" preview limit
-                            send(await ctx.send(file=discord_mod.File(
-                                filename="inspection.prolog",
-                                fp=io.BytesIO(text.encode('utf-8'))
-                            )))
-                        else:
-                            paginator = WrappedPaginator(prefix="```prolog", max_size=1980)
+                        # if use_file_check(ctx, len(text)):  # File "full content" preview limit
+                            # send(await ctx.send(file=discord_mod.File(
+                                # filename="inspection.prolog",
+                                # fp=io.BytesIO(text.encode('utf-8'))
+                            # )))
+                        # else:
+                        # paginator = WrappedPaginator(prefix="```prolog", max_size=1980)
 
-                            paginator.add_line(text)
+                        # paginator.add_line(text)
 
-                            interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
-                            send(await interface.send_to(ctx))
+                        # interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
+                        # send(await interface.send_to(ctx))
+                        await ctx.send("```prolog\n"+text+'\n```')
         finally:
             scope.clear_intersection(arg_dict)
 
     if line_profiler is not None:
-        @Feature.Command(parent="jsk", name="timeit")
-        async def jsk_timeit(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
+        @JSK.command(name="timeit")
+        async def jsk_timeit(self, ctx: Context, *, argument: str):  # type: ignore
             """
             Times and produces a relative timing report for a block of code.
             """
 
-            if typing.TYPE_CHECKING:
-                argument: Codeblock = argument  # type: ignore
+            argument: Codeblock = codeblock_converter(argument)
 
             arg_dict, convertables = self.jsk_python_get_convertables(ctx)
             scope = self.scope
 
             try:
                 async with ReplResponseReactor(ctx.message):
-                    with self.submit(ctx):
+                    with JSK.submit(ctx):
                         executor = AsyncCodeExecutor(
                             argument.content, scope,
                             arg_dict=arg_dict,
@@ -303,75 +302,74 @@ class PythonFeature(Command):
                                 f"Active (non-waiting) time: {active_time}",
                                 "**Delay will be added by async setup, use only for relative measurements**",
                             ]),
-                            file=discord_mod.File(
-                                filename="lines.ansi",
-                                fp=io.BytesIO(''.join(lines).encode('utf-8'))
-                            )
+                            # file=discord_mod.File(
+                            #     filename="lines.ansi",
+                            #     fp=io.BytesIO(''.join(lines).encode('utf-8'))
+                            # )
                         )
 
             finally:
                 scope.clear_intersection(arg_dict)
 
-    @Feature.Command(parent="jsk", name="dis", aliases=["disassemble"])
-    async def jsk_disassemble(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
+    @JSK.command(name="dis", aliases=["disassemble"])
+    async def jsk_disassemble(self, ctx: Context, *, argument: str):  # type: ignore
         """
         Disassemble Python code into bytecode.
         """
 
-        if typing.TYPE_CHECKING:
-            argument: Codeblock = argument  # type: ignore
+        argument: Codeblock = codeblock_converter(argument)
 
         arg_dict = get_var_dict_from_ctx(ctx, Flags.SCOPE_PREFIX)
 
         async with ReplResponseReactor(ctx.message):
             text = "\n".join(disassemble(argument.content, arg_dict=arg_dict))
 
-            if use_file_check(ctx, len(text)):  # File "full content" preview limit
-                await ctx.send(file=discord_mod.File(
-                    filename="dis.py",
-                    fp=io.BytesIO(text.encode('utf-8'))
-                ))
-            else:
-                paginator = WrappedPaginator(prefix='```py', max_size=1980)
+            # if use_file_check(ctx, len(text)):  # File "full content" preview limit
+            #     await ctx.send(file=discord_mod.File(
+            #         filename="dis.py",
+            #         fp=io.BytesIO(text.encode('utf-8'))
+            #     ))
+            # else:
+            #     paginator = WrappedPaginator(prefix='```py', max_size=1980)
 
-                paginator.add_line(text)
+            #     paginator.add_line(text)
 
-                interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
-                await interface.send_to(ctx)
+            #     interface = PaginatorInterface(ctx.bot, paginator, owner=ctx.author)
+            #     await interface.send_to(ctx)
+            await ctx.send(f"```py\n{text}\n```")
 
-    @Feature.Command(parent="jsk", name="ast")
-    async def jsk_ast(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
+    @JSK.command(name="ast")
+    async def jsk_ast(self, ctx: Context, *, argument: str):  # type: ignore
         """
         Disassemble Python code into AST.
         """
 
-        if typing.TYPE_CHECKING:
-            argument: Codeblock = argument  # type: ignore
+        argument: Codeblock = codeblock_converter(argument)
 
         async with ReplResponseReactor(ctx.message):
             text = create_tree(argument.content, use_ansi=Flags.use_ansi(ctx))
 
-            await ctx.send(file=discord_mod.File(
-                filename="ast.ansi",
-                fp=io.BytesIO(text.encode('utf-8'))
-            ))
+            # await ctx.send(file=discord_mod.File(
+            #     filename="ast.ansi",
+            #     fp=io.BytesIO(text.encode('utf-8'))
+            # ))
+            # TODO: File support
 
     if sys.version_info >= (3, 11):
-        @Feature.Command(parent="jsk", name="specialist")
-        async def jsk_specialist(self, ctx: Context, *, argument: codeblock_converter):  # type: ignore
+        @JSK.command(name="specialist")
+        async def jsk_specialist(self, ctx: Context, *, argument: str):  # type: ignore
             """
             Direct evaluation of Python code.
             """
 
-            if typing.TYPE_CHECKING:
-                argument: Codeblock = argument  # type: ignore
+            argument: Codeblock = codeblock_converter(argument)
 
             arg_dict, convertables = self.jsk_python_get_convertables(ctx)
             scope = self.scope
 
             try:
                 async with ReplResponseReactor(ctx.message):
-                    with self.submit(ctx):
+                    with JSK.submit(ctx):
                         executor = AsyncCodeExecutor(argument.content, scope, arg_dict=arg_dict, convertables=convertables)
                         async for send, result in AsyncSender(executor):  # type: ignore
                             send: typing.Callable[..., None]
@@ -402,10 +400,11 @@ class PythonFeature(Command):
 
                         text = formatter.output(True, Flags.use_ansi(ctx))
 
-                        await ctx.send(file=discord_mod.File(
-                            filename="specialist.ansi",
-                            fp=io.BytesIO(text.encode('utf-8'))
-                        ))
+                        # await ctx.send(file=discord_mod.File(
+                        #     filename="specialist.ansi",
+                        #     fp=io.BytesIO(text.encode('utf-8'))
+                        # ))
+                        # TODO
 
             finally:
                 scope.clear_intersection(arg_dict)

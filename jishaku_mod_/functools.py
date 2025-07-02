@@ -1,16 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-jishaku.functools
-~~~~~~~~~~~~~~~~~
-
-Function-related tools for Jishaku.
-
-:copyright: (c) 2021 Devon (scarletcafe) R
-:license: MIT, see LICENSE for more details.
-
-"""
-
 import asyncio
 import functools
 import typing

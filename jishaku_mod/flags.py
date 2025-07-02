@@ -174,11 +174,12 @@ class Flags(metaclass=FlagMeta):  # pylint: disable=too-few-public-methods
     # Flag to indicate whether ANSI support should always be disabled
     USE_ANSI_NEVER: bool
 
-    # @classmethod
-    # def use_ansi(cls, ctx: ContextA) -> bool:
-    #     """
-    #     Determine whether to use ANSI support from flags and context
-    #     """
+    @classmethod
+    def use_ansi(cls, ctx: typing.Any) -> bool:
+        """
+        Determine whether to use ANSI support from flags and context
+        """
+        return False
 
     #     if cls.USE_ANSI_NEVER:
     #         return False
